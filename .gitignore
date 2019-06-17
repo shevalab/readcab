@@ -1,0 +1,10 @@
+target
+.idea
+npm-debug.log
+*.iml
+.project
+.classpath
+.settings
+worker/cs-commons/res
+C:\\usr
+bin
