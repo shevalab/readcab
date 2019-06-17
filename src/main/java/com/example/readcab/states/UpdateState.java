@@ -31,20 +31,22 @@ public class UpdateState extends BaseState {
             Boolean isBundle = Boolean.valueOf(attributes.getValue("IsBundle"));
             String deploymentAction = attributes.getValue("DeploymentAction");
             String revisionId = attributes.getValue("RevisionId");
+            String defaultLanguage = attributes.getValue("DefaultLanguage");
             if(isBundle || "Bundle".equals(deploymentAction)) {
                 applicable = true;
                 update.setUpdateId(updateId);
                 Date creationDate = DateUtils.parseDate(attributes.getValue("CreationDate").replace("Z", "+0000"),
-                        new String[]{"yyyy-MM-dd'T'HH:mm:ssZ"});
+                        new String[] {"yyyy-MM-dd'T'HH:mm:ssZ"});
                 update.setCreationTime(creationDate);
+                update.getLanguages().add(defaultLanguage);
             }
-            RequisiteType requisiteType = applicable ? (isBundle ? BUNDLE : BUNDLED) : NONE;
+            RequisiteType requisiteType = applicable ? (isBundle ? BUNDLE : NONE) : NONE;
             switch (requisiteType) {
                 case BUNDLE:
-                    cabPackagesData.getUpdateRequisiteMap().put(revisionId, new Requisite().setType(requisiteType).setContent(updateId));
+                    cabPackagesData.getOrCreateRequisite(revisionId).setType(requisiteType).setContent(updateId);
                     break;
                 case NONE:
-                    cabPackagesData.getUpdateRequisiteMap().put(updateId, new Requisite().setType(requisiteType).setContent(revisionId));
+                    cabPackagesData.getOrCreateRequisite(updateId).setType(requisiteType).setContent(revisionId);
                     break;
                 default:
             }

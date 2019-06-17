@@ -7,6 +7,8 @@ public class CabPackagesData {
     private Collection<UpdateWithRequisitesDto> updates = new LinkedList<>();
     private Collection<PayloadFile> payloadFiles = new LinkedList<>();
 
+
+
     private UpdateWithRequisitesDto currentUpdate = null;
     private PayloadFile currentFile = null;
 
@@ -36,5 +38,13 @@ public class CabPackagesData {
 
     public void setCurrentFile(PayloadFile currentFile) {
         this.currentFile = currentFile;
+    }
+
+    public Requisite getOrCreateRequisite(String id, RequisiteType requisiteType) {
+        return getUpdateRequisiteMap().computeIfAbsent(id, key -> new Requisite().setType(requisiteType));
+    }
+
+    public Requisite getOrCreateRequisite(String id) {
+        return getUpdateRequisiteMap().computeIfAbsent(id, key -> new Requisite());
     }
 }

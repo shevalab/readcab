@@ -18,7 +18,7 @@ import java.io.IOException;
 public class CabParserSaxHelper {
 
     private static final String BASE_PATH = "/home/vadim/tmp/WSUS-less/offline-scan/extracted/";
-    RevisionToFile index = null;
+    private RevisionToFile index = null;
 
     public RevisionToFile parseIndexFile() throws ParserConfigurationException, SAXException, IOException {
         RevisionToFile indexMap = new RevisionToFile();
@@ -28,10 +28,7 @@ public class CabParserSaxHelper {
                                 .child(new CabIndexState("Cab")))
                 ).setData(indexMap);
 
-        SAXParserFactory factory = SAXParserFactory.newInstance();
-        factory.setValidating(false);
-        SAXParser saxParser = factory.newSAXParser();
-        saxParser.parse(new File(BASE_PATH, "index.xml"), new StatefulSaxHandler().setRootParserState(state));
+        parseFile(new File(BASE_PATH, "index.xml"), state);
 
         return indexMap;
     }
@@ -42,22 +39,21 @@ public class CabParserSaxHelper {
             index = parseIndexFile();
         }
 
-        SAXParserFactory factory = SAXParserFactory.newInstance();
-        SAXParser saxParser = factory.newSAXParser();
         CabPackagesData cabPackagesData = new CabPackagesData();
-        BaseState state = createStates(cabPackagesData);
+        BaseState state = createPackageStates(cabPackagesData);
 
-        BaseState stubState = new BaseState(null)
-                .setAllowMissingChild(true)
-                .setStubSupplier(() -> new PrintingState())
-                .setData(new IndentData());
-
-
-        saxParser.parse(new File(BASE_PATH, "package/package.xml"), new StatefulSaxHandler().setRootParserState(state));
+        parseFile(new File(BASE_PATH, "package/package.xml"), state);
         int x = 1;
     }
 
-    private BaseState createStates(CabPackagesData cabPackageData) {
+    private void parseFile(File path, BaseState state) throws ParserConfigurationException, SAXException, IOException {
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+        factory.setValidating(false);
+        SAXParser saxParser = factory.newSAXParser();
+        saxParser.parse(path, new StatefulSaxHandler().setRootParserState(state));
+    }
+
+    private BaseState createPackageStates(CabPackagesData cabPackageData) {
         return new BaseState()
                 .child(new BaseState("OfflineSyncPackage")
                         .child(new BaseState("Updates")
@@ -95,5 +91,12 @@ public class CabParserSaxHelper {
                         )
                         .setData(cabPackageData) // must be after setting children to propagate the data object to them.
                 );
+    }
+
+    private BaseState createPrintingStates() {
+        return new BaseState(null)
+                .setAllowMissingChild(true)
+                .setStubSupplier(() -> new PrintingState())
+                .setData(new IndentData());
     }
 }
