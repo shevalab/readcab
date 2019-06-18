@@ -8,11 +8,9 @@ public class CabPackagesData {
     private Collection<UpdateWithRequisitesDto> updates = new LinkedList<>();
     private Collection<PayloadFile> payloadFiles = new LinkedList<>();
     private boolean englishProperties = false;
-
-
-
     private UpdateWithRequisitesDto currentUpdate = null;
     private PayloadFile currentFile = null;
+    private Requisite currentCategoryInfo;
 
     public CabPackagesData(CabParserSaxHelper cabParserSaxHelper) {
         this.parserHelper = cabParserSaxHelper;
@@ -62,7 +60,17 @@ public class CabPackagesData {
         return englishProperties;
     }
 
-    public void setEnglishProperties(boolean englishProperties) {
+    public CabPackagesData setEnglishProperties(boolean englishProperties) {
         this.englishProperties = englishProperties;
+        return this;
+    }
+
+    public Requisite getCurrentCategoryInfo() {
+        return currentCategoryInfo;
+    }
+
+    public CabPackagesData setCurrentCategoryInfo(Requisite currentCategoryInfo) {
+        this.currentCategoryInfo = currentCategoryInfo;
+        return this;
     }
 }

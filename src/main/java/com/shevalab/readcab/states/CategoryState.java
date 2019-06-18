@@ -6,7 +6,7 @@ import com.shevalab.readcab.RequisiteType;
 import com.shevalab.utils.xml.BaseState;
 import org.xml.sax.Attributes;
 
-public class CategoryState extends BaseState {
+public class CategoryState extends CabPackagesBaseState {
     public CategoryState(String name) {
         super(name);
     }
@@ -22,7 +22,14 @@ public class CategoryState extends BaseState {
          */
         String type = attributes.getValue("Type");
         String id = attributes.getValue("Id");
-        CabPackagesData cabPackagesData = (CabPackagesData)getData();
+        CabPackagesData cabPackagesData = getCabPackagesData();
+        RequisiteType requisiteType = getRequisiteType(type);
+        Requisite requisite = cabPackagesData.getOrCreateRequisite(id, requisiteType);
+        cabPackagesData.getCurrentUpdate().getPreRequisites().add(requisite);
+        return this;
+    }
+
+    public static RequisiteType getRequisiteType(String type) {
         RequisiteType requisiteType = RequisiteType.NONE;
         switch(type) {
             case "Company": requisiteType = RequisiteType.COMPANY;
@@ -34,8 +41,6 @@ public class CategoryState extends BaseState {
             case "UpdateClassification": requisiteType = RequisiteType.CLASSIFICATION;
                 break;
         }
-        Requisite requisite = cabPackagesData.getOrCreateRequisite(id, requisiteType);
-        cabPackagesData.getCurrentUpdate().getPreRequisites().add(requisite);
-        return this;
+        return requisiteType;
     }
 }

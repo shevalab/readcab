@@ -4,7 +4,7 @@ import com.shevalab.readcab.CabPackagesData;
 import com.shevalab.utils.xml.BaseState;
 import org.xml.sax.Attributes;
 
-public class PayloadFileState extends BaseState {
+public class PayloadFileState extends CabPackagesBaseState {
     public PayloadFileState(String name) {
         super(name);
     }
@@ -14,7 +14,7 @@ public class PayloadFileState extends BaseState {
         /* <File Id="Z1lhqr36JDqP4+jJ2wku9Xe0UN8="/> */
 
         String id = attributes.getValue("Id");
-        CabPackagesData cabPackagesData = (CabPackagesData)getData();
+        CabPackagesData cabPackagesData = getCabPackagesData();
         cabPackagesData.getCurrentUpdate().addPayloadFile(id);
         return this;
     }

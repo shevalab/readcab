@@ -5,7 +5,7 @@ import com.shevalab.readcab.Requisite;
 import com.shevalab.utils.xml.BaseState;
 import org.xml.sax.Attributes;
 
-public class BundledByState extends BaseState {
+public class BundledByState extends CabPackagesBaseState {
     public BundledByState(String name) {
         super(name);
     }
@@ -15,7 +15,7 @@ public class BundledByState extends BaseState {
         /* <Revision Id="29010703"/> */
 
         String id = attributes.getValue("Id");
-        CabPackagesData cabPackagesData = (CabPackagesData)getData();
+        CabPackagesData cabPackagesData = getCabPackagesData();
         Requisite requisite = cabPackagesData.getOrCreateRequisite(id);
         cabPackagesData.getCurrentUpdate().getBundledByRequisites().add(requisite);
         return this;

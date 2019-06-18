@@ -5,7 +5,7 @@ import com.shevalab.readcab.PayloadFile;
 import com.shevalab.utils.xml.BaseState;
 import org.xml.sax.Attributes;
 
-public class FileLocationState extends BaseState {
+public class FileLocationState extends CabPackagesBaseState {
     public FileLocationState(String name) {
         super(name);
     }
@@ -20,7 +20,7 @@ public class FileLocationState extends BaseState {
         String id = attributes.getValue("Id");
         String url = attributes.getValue("Url");
 
-        CabPackagesData cabPackagesData = (CabPackagesData) getData();
+        CabPackagesData cabPackagesData = getCabPackagesData();
         cabPackagesData.getPayloadFiles().add(new PayloadFile().setDigest(id).setLocation(url));
         return this;
     }

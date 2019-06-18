@@ -5,7 +5,7 @@ import com.shevalab.readcab.Requisite;
 import com.shevalab.utils.xml.BaseState;
 import org.xml.sax.Attributes;
 
-public class SupersededByState extends BaseState {
+public class SupersededByState extends CabPackagesBaseState {
     public SupersededByState(String name) {
         super(name);
     }
@@ -15,7 +15,7 @@ public class SupersededByState extends BaseState {
         /* <Revision Id="29010703"/> */
 
         String id = attributes.getValue("Id");
-        CabPackagesData cabPackagesData = (CabPackagesData)getData();
+        CabPackagesData cabPackagesData = getCabPackagesData();
         Requisite requisite = cabPackagesData.getOrCreateRequisite(id);
         cabPackagesData.getCurrentUpdate().getSupersededByRequisites().add(requisite);
         return this;

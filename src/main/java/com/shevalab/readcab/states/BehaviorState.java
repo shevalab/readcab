@@ -6,7 +6,7 @@ import com.shevalab.readcab.RebootBehavior;
 import com.shevalab.utils.xml.BaseState;
 import org.xml.sax.Attributes;
 
-public abstract class BehaviorState extends BaseState {
+public abstract class BehaviorState extends CabPackagesBaseState {
     public BehaviorState(String elementName) {
         super(elementName);
     }
@@ -16,7 +16,7 @@ public abstract class BehaviorState extends BaseState {
 
         String rebootBehavior = attributes.getValue("RebootBehavior");
         String impact = attributes.getValue("Impact");
-        CabPackagesData cabPackagesData = (CabPackagesData)getData();
+        CabPackagesData cabPackagesData = getCabPackagesData();
         setRebootBehavior(cabPackagesData, convertRebootBehavior(rebootBehavior), convertImpact(impact));
         return this;
     }

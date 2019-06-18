@@ -4,7 +4,7 @@ import com.shevalab.readcab.CabPackagesData;
 import com.shevalab.utils.xml.BaseState;
 import org.xml.sax.Attributes;
 
-public class LanguageState extends BaseState {
+public class LanguageState extends CabPackagesBaseState {
     public LanguageState(String name) {
         super(name);
     }
@@ -15,7 +15,7 @@ public class LanguageState extends BaseState {
         /* <Language Name="en"/> */
 
         String language = attributes.getValue("Name");
-        CabPackagesData cabPackagesData = (CabPackagesData) getData();
+        CabPackagesData cabPackagesData = getCabPackagesData();
         cabPackagesData.getCurrentUpdate().getLanguages().add(language);
         return this;
     }
