@@ -14,7 +14,7 @@ public class PropertiesTitleState extends CabPackagesBaseState {
         CabPackagesData cabPackagesData = getCabPackagesData();
         if(cabPackagesData.isEnglishProperties()) {
             String title = new String(ch, start, length);
-            Requisite categoryInfo = cabPackagesData.getCurrentCategoryInfo();
+            Requisite categoryInfo = cabPackagesData.getCurrentRequisite();
             if(categoryInfo != null) {
                 categoryInfo.setContent(title);
             } else{

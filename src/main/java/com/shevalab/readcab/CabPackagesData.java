@@ -10,7 +10,7 @@ public class CabPackagesData {
     private boolean englishProperties = false;
     private UpdateWithRequisitesDto currentUpdate = null;
     private PayloadFile currentFile = null;
-    private Requisite currentCategoryInfo;
+    private Requisite currentRequisite;
 
     public CabPackagesData(CabParserSaxHelper cabParserSaxHelper) {
         this.parserHelper = cabParserSaxHelper;
@@ -65,12 +65,12 @@ public class CabPackagesData {
         return this;
     }
 
-    public Requisite getCurrentCategoryInfo() {
-        return currentCategoryInfo;
+    public Requisite getCurrentRequisite() {
+        return currentRequisite;
     }
 
-    public CabPackagesData setCurrentCategoryInfo(Requisite currentCategoryInfo) {
-        this.currentCategoryInfo = currentCategoryInfo;
+    public CabPackagesData setCurrentRequisite(Requisite currentCategoryInfo) {
+        this.currentRequisite = currentCategoryInfo;
         return this;
     }
 }

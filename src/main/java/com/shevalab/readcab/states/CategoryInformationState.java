@@ -1,6 +1,5 @@
 package com.shevalab.readcab.states;
 
-import com.shevalab.readcab.CabPackagesData;
 import com.shevalab.utils.xml.BaseState;
 import org.xml.sax.Attributes;
 
@@ -15,7 +14,7 @@ public class CategoryInformationState extends CabPackagesBaseState {
     */
         String categoryType = attributes.getValue("CategoryType");
 
-        getCabPackagesData().getCurrentCategoryInfo()
+        getCabPackagesData().getCurrentRequisite()
                 .setType(CategoryState.getRequisiteType(categoryType));
         return this;
     }

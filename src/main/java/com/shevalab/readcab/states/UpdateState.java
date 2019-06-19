@@ -66,6 +66,17 @@ public class UpdateState extends CabPackagesBaseState {
         return this;
     }
 
+    @Override
+    public BaseState endElement() {
+        // move the current update to the result list
+        CabPackagesData cabPackagesData = getCabPackagesData();
+        if(applicable) {
+            cabPackagesData.getUpdates().add(cabPackagesData.getCurrentUpdate());
+        }
+        cabPackagesData.setCurrentUpdate(null);
+        return this;
+    }
+
     private void parseSProperties(CabPackagesData cabPackagesData, String revisionId) throws ParserConfigurationException, SAXException, IOException {
         CabParserSaxHelper parser = cabPackagesData.getParserHelper();
         BaseState state = new BaseState()
@@ -87,6 +98,31 @@ public class UpdateState extends CabPackagesBaseState {
                         .child(new BaseState("upd:HandlerSpecificData")
                                 .child(new CategoryInformationState("cat:CategoryInformation"))
                         )
+                        .child(new BaseState("upd:Relationships")
+                            .child(new BaseState("upd:Prerequisites")
+                                    .child(new BaseState("upd:AtLeastOne")
+                                            .child(new PropertiesUpdateIdentityState("upd:UpdateIdentity"))
+                                            .setAllowMissingChild(true)
+                                    )
+                                    .child(new PropertiesUpdateIdentityState("upd:UpdateIdentity"))
+                                    .setAllowMissingChild(true)
+                            )
+                            .setAllowMissingChild(true)
+                        )
+                        .child(new BaseState("upd:ApplicabilityRules")
+                                .child(new BaseState("upd:IsInstalled")
+                                        .child(new BaseState("lar:And")
+                                                .child(new BaseState("lar:Or")
+                                                        .child(new WindowsVersionState("bar:WindowsVersion"))
+                                                        .setAllowMissingChild(true)
+                                                )
+                                                .child(new WindowsVersionState("bar:WindowsVersion"))
+                                                .setAllowMissingChild(true)
+                                        )
+                                        .setAllowMissingChild(true)
+                                )
+                                .setAllowMissingChild(true)
+                        )
                         .setAllowMissingChild(true)
                 ).setData(cabPackagesData);
         parser.parseFile(new File(CabParserSaxHelper.getBasePath(), buildSPath(parser.getIndex().getFile(revisionId), revisionId)), state);
@@ -94,16 +130,5 @@ public class UpdateState extends CabPackagesBaseState {
 
     private String buildSPath(String folder, String revisionId) {
         return folder.substring(0, folder.length() - 4) + "/s/" + revisionId;
-    }
-
-    @Override
-    public BaseState endElement() {
-        // move the current update to the result list
-        CabPackagesData cabPackagesData = getCabPackagesData();
-        if(applicable) {
-            cabPackagesData.getUpdates().add(cabPackagesData.getCurrentUpdate());
-        }
-        cabPackagesData.setCurrentUpdate(null);
-        return this;
     }
 }

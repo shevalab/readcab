@@ -1,6 +1,7 @@
 package com.shevalab.readcab;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class UpdateWithRequisitesDto extends WsusUpdateDto {
     private List<Requisite> preRequisites;
@@ -9,6 +10,8 @@ public class UpdateWithRequisitesDto extends WsusUpdateDto {
     private List<String> payloadFiles;
     private Set<String> languages;
     private String revision;
+
+    private List<Requisite> mergedDistincePreRequisites; // cache merged distinct requisites
 
     public List<Requisite> getPreRequisites() {
         if(preRequisites == null) {
@@ -65,23 +68,39 @@ public class UpdateWithRequisitesDto extends WsusUpdateDto {
 
     @Override
     public List<String> getProduct() {
-        String product = getRequisite(RequisiteType.PRODUCT);
-        return product == null ? super.getProduct() : Collections.singletonList(product);
+        List<String> product = getRequisites(RequisiteType.PRODUCT);
+        return product.isEmpty() ? super.getProduct() : product;
     }
 
     @Override
     public List<String> getProductFamily() {
-        String productFamily = getRequisite(RequisiteType.PRODUCT_FAMILY);
-        return productFamily == null ? super.getProductFamily() : Collections.singletonList(productFamily);
+        List<String> productFamily = getRequisites(RequisiteType.PRODUCT_FAMILY);
+        return productFamily.isEmpty() ? super.getProductFamily() : productFamily;
     }
 
     private String getRequisite(RequisiteType requisiteType) {
-        Optional<Requisite> requisite = getPreRequisites().stream()
+        Optional<Requisite> requisite = getMergedDistinctPreRequisites().stream()
                 .filter(r -> r.getType().equals(requisiteType))
                 .findFirst();
         if(requisite.isPresent()) {
             return requisite.get().getContent();
         }
         return null;
+    }
+
+    private List<String> getRequisites(RequisiteType requisiteType) {
+        return getMergedDistinctPreRequisites().stream()
+                .filter(r -> r.getType().equals(requisiteType))
+                .map(Requisite::getContent)
+                .collect(Collectors.toList());
+    }
+
+    private List<Requisite> getMergedDistinctPreRequisites() {
+        if(mergedDistincePreRequisites == null) mergedDistincePreRequisites = getPreRequisites().stream()
+                .map(r -> r.thisWithDependenciesRecursive())
+                .flatMap(Collection::stream)
+                .distinct()
+                .collect(Collectors.toList());
+        return mergedDistincePreRequisites;
     }
 }
